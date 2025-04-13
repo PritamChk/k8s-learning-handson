@@ -1,7 +1,9 @@
 # k8s-learning-handson
+
 This is to learn kubernetes and take notes of learnings
 
 # Diagram
+
 <img width="355" alt="image" src="https://github.com/user-attachments/assets/7e9cdea9-6254-4cbe-a0f8-4c51671b997e" />
 
 # K3S cluster alternative to k8s setup
@@ -99,4 +101,30 @@ nginx-pod   1/1     Running   0          10s
 [root@ip-10-0-14-179 ec2-user]# kubectl get pod nginx-pod -o wide
 NAME        READY   STATUS    RESTARTS   AGE   IP          NODE        NOMINATED NODE   READINESS GATES
 nginx-pod   1/1     Running   0          50s   10.42.2.4   worker-n1   <none>           <none>
+```
+
+## ✅ How to Use `k3s` / `kubectl` as a Normal User (AWS Linux 2023)
+
+To use `k3s` and `kubectl` from a **non-root (normal) user**, follow these steps:
+
+---
+
+### ✅ 1. Add `kubectl` to User's `PATH`
+
+By default, `k3s` installs `kubectl` as a symlink. Create the symlink manually:
+
+```bash
+sudo ln -s /usr/local/bin/k3s /usr/local/bin/kubectl
+```
+
+```sh
+mkdir -p ~/.kube
+sudo cp /etc/rancher/k3s/k3s.yaml ~/.kube/config
+sudo chown $(id -u):$(id -g) ~/.kube/config
+```
+
+> Replace 127.0.0.1 with your master node's IP address:
+
+```sh
+sed -i 's/127.0.0.1/<your-master-ip>/' ~/.kube/config
 ```
