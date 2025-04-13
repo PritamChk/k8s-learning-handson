@@ -1,6 +1,9 @@
 # k8s-learning-handson
 This is to learn kubernetes and take notes of learnings
 
+# Diagram
+<img width="355" alt="image" src="https://github.com/user-attachments/assets/7e9cdea9-6254-4cbe-a0f8-4c51671b997e" />
+
 # K3S cluster alternative to k8s setup
 
 ---
