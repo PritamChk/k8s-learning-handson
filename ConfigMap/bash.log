@@ -1,0 +1,67 @@
+[ec2-user@ip-172-31-36-165 configMap]$ kubectl create configmap testCM1 --from-file cm1.yaml
+error: failed to create configmap: ConfigMap "testCM1" is invalid: metadata.name: Invalid value: "testCM1": a lowercase RFC 1123 subdomain must consist of lower case alphanumeric characters, '-' or '.', and must start and end with an alphanumeric character (e.g. 'example.com', regex used for validation is '[a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*')
+[ec2-user@ip-172-31-36-165 configMap]$ kubectl create configmap testcm1 --from-file cm1.yaml
+configmap/testcm1 created
+[ec2-user@ip-172-31-36-165 configMap]$ kubctl get configmap
+-bash: kubctl: command not found
+[ec2-user@ip-172-31-36-165 configMap]$ kubectl get configmap
+NAME               DATA   AGE
+kube-root-ca.crt   1      22m
+testcm1            1      26s
+[ec2-user@ip-172-31-36-165 configMap]$ kubectl describe configmap testcm1
+Name:         testcm1
+Namespace:    default
+Labels:       <none>
+Annotations:  <none>
+
+Data
+====
+cm1.yaml:
+----
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: game-demo
+data:
+  # property-like keys; each key maps to a simple value
+  player_initial_lives: "3"
+  ui_properties_file_name: "user-interface.properties"
+
+  # file-like keys
+  game.properties: |
+    enemy.types=aliens,monsters
+    player.maximum-lives=5
+  user-interface.properties: |
+    color.good=purple
+    color.bad=yellow
+    allow.textmode=true
+
+
+
+BinaryData
+====
+
+Events:  <none>
+
+
+[ec2-user@ip-172-31-36-165 configMap]$ kubectl create configmap testcm1 --from-file cm1.yaml
+error: failed to create configmap: configmaps "testcm1" already exists
+[ec2-user@ip-172-31-36-165 configMap]$ kubectl delete configmap testcm1
+configmap "testcm1" deleted
+[ec2-user@ip-172-31-36-165 configMap]$ kubectl create configmap game-demo --from-file cm1.yaml
+configmap/game-demo created
+[ec2-user@ip-172-31-36-165 configMap]$
+
+
+[ec2-user@master-n1 configMap]$ kubectl delete configmap game-demo
+kubectl apply -f cm1.yaml
+configmap "game-demo" deleted
+configmap/game-demo created
+[ec2-user@master-n1 configMap]$
+[ec2-user@master-n1 configMap]$ k get pod
+NAME                 READY   STATUS    RESTARTS   AGE
+configmap-demo-pod   1/1     Running   0          2m57s
+[ec2-user@master-n1 configMap]$ k get pod -o wide
+NAME                 READY   STATUS    RESTARTS   AGE    IP          NODE        NOMINATED NODE   READINESS GATES
+configmap-demo-pod   1/1     Running   0          4m1s   10.42.1.5   worker-n1   <none>           <none>
+[ec2-user@master-n1 configMap]$

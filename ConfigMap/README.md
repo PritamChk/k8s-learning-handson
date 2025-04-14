@@ -21,12 +21,17 @@ kubectl get configmap [NAME] -o yaml/json
 
 # Secrets
 
-it should not have $ ! * \
+it should not have $ ! \* \
 then --> it needs escaping
 
 ```sh
 kubctl get secrets
 ```
+
 ```sh
 kubctl describe secrets <Sec. Name>
 ```
+
+----
+
+![alt text](image.png)
