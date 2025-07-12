@@ -17,13 +17,38 @@
 > ## Master node:
 
 ```sh
+# Switch to root
 sudo su
+
+# Set hostname
 hostnamectl set-hostname master-n1
-curl -Lo /usr/local/bin/k3s https://github.com/k3s-io/k3s/releases/download/v1.26.5+k3s1/k3s; chmod a+x /usr/local/bin/k3s
+
+# Download the latest K3s binary
+curl -Lo /usr/local/bin/k3s \
+  https://github.com/k3s-io/k3s/releases/download/v1.33.2+k3s1/k3s \
+  && chmod a+x /usr/local/bin/k3s
+
+# Start the server in the background, allow kubectl access to kubeconfig
 nohup k3s server --write-kubeconfig-mode 644 &
-sudo ln -s /usr/local/bin/k3s /usr/local/bin/kubectl
-echo "nohup k3s server --write-kubeconfig-mode 644 &" > startk3s_cluster.sh
-echo "sudo pkill -f k3s" > stopk3s_cluster.sh
+
+# Create kubectl symlink
+ln -sf /usr/local/bin/k3s /usr/local/bin/kubectl
+
+# Save start/stop scripts
+cat << 'EOF' > startk3s_cluster.sh
+#!/bin/bash
+nohup k3s server --write-kubeconfig-mode 644 &
+EOF
+chmod +x startk3s_cluster.sh
+
+cat << 'EOF' > stopk3s_cluster.sh
+#!/bin/bash
+pkill -f k3s
+EOF
+chmod +x stopk3s_cluster.sh
+
+#echo "nohup k3s server --write-kubeconfig-mode 644 &" > startk3s_cluster.sh
+#echo "sudo pkill -f k3s" > stopk3s_cluster.sh
 ```
 
 ### Token Generate
@@ -39,7 +64,9 @@ cat /var/lib/rancher/k3s/server/node-token
 ```sh
 sudo su
 hostnamectl set-hostname worker-n1
-curl -Lo /usr/local/bin/k3s https://github.com/k3s-io/k3s/releases/download/v1.26.5+k3s1/k3s; chmod a+x /usr/local/bin/k3s
+curl -Lo /usr/local/bin/k3s \
+  https://github.com/k3s-io/k3s/releases/download/v1.33.2+k3s1/k3s \
+  && chmod a+x /usr/local/bin/k3s
 ```
 
 ### Join the cluster
