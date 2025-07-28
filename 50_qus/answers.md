@@ -146,3 +146,45 @@ q3-nginx-deployment-6d6b7df55b-4b5rt   1/1     Running   0          61s
 q3-nginx-deployment-6d6b7df55b-fg2t5   1/1     Running   0          61s
 q3-nginx-deployment-6d6b7df55b-xdvpk   1/1     Running   0          61s
 ```
+
+### 4. Scale the Deployment to 5 replicas
+
+It can be done in two ways :
+
+```bash
+kubectl scale deployment q3-nginx-deployment --replicas=5
+```
+
+> O/P:
+>
+> ```sh
+> [ec2-user@master-n1 50_qus]$ kubectl scale deployment q3-nginx-deployment --replicas=5
+> deployment.apps/q3-nginx-deployment scaled
+> [ec2-user@master-n1 50_qus]$ k get po
+> NAME                                   READY   STATUS    RESTARTS   AGE
+> q3-nginx-deployment-6d6b7df55b-4b5rt   1/1     Running   0          7m29s
+> q3-nginx-deployment-6d6b7df55b-fg2t5   1/1     Running   0          7m29s
+> q3-nginx-deployment-6d6b7df55b-pn5sg   1/1     Running   0          6s
+> q3-nginx-deployment-6d6b7df55b-tcxzt   1/1     Running   0          6s
+> q3-nginx-deployment-6d6b7df55b-xdvpk   1/1     Running   0          7m29s
+>
+> ```
+
+or
+
+```sh
+kubectl edit deployment q3-nginx-deployment
+```
+
+> then edit the no of replica in the file and save
+
+```sh
+[ec2-user@master-n1 50_qus]$ kubectl edit deployment q3-nginx-deployment
+deployment.apps/q3-nginx-deployment edited
+[ec2-user@master-n1 50_qus]$ k get po
+NAME                                   READY   STATUS    RESTARTS   AGE
+q3-nginx-deployment-6d6b7df55b-4b5rt   1/1     Running   0          9m12s
+q3-nginx-deployment-6d6b7df55b-fg2t5   1/1     Running   0          9m12s
+q3-nginx-deployment-6d6b7df55b-pn5sg   1/1     Running   0          109s
+q3-nginx-deployment-6d6b7df55b-xdvpk   1/1     Running   0          9m12s
+```
