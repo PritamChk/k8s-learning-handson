@@ -222,3 +222,23 @@ NAME                                   READY   STATUS    RESTARTS   AGE
 q3-nginx-deployment-6d6b7df55b-l4krv   1/1     Running   0          14s
 q3-nginx-deployment-6d6b7df55b-pn5sg   1/1     Running   0          7m9s
 ```
+
+### 6. Run a busybox pod and exec into it to test DNS resolution
+
+```sh
+[ec2-user@master-n1 50_qus]$ kubectl run dns-test --rm -it --image=busybox:1.28 --restart=Never -- /bin/sh
+If you don't see a command prompt, try pressing enter.
+/ # nslookup kubernetes.default
+Server:    10.43.0.10
+Address 1: 10.43.0.10 kube-dns.kube-system.svc.cluster.local
+
+Name:      kubernetes.default
+Address 1: 10.43.0.1 kubernetes.default.svc.cluster.local
+```
+
+> 📝 Explanation:
+> The command nslookup kubernetes.default checks DNS inside the pod.
+>
+> kubernetes.default is a built-in ClusterIP service that all pods should resolve.
+>
+> DNS is provided by CoreDNS in most Kubernetes clusters.
