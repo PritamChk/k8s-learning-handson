@@ -188,3 +188,37 @@ q3-nginx-deployment-6d6b7df55b-fg2t5   1/1     Running   0          9m12s
 q3-nginx-deployment-6d6b7df55b-pn5sg   1/1     Running   0          109s
 q3-nginx-deployment-6d6b7df55b-xdvpk   1/1     Running   0          9m12s
 ```
+
+### 5. Delete one pod from the Deployment and observe recreation
+
+> **Observation**:
+>
+> Kubernetes automatically created a new pod to maintain the desired replica count set in the Deployment.
+>
+> **Why?**
+>
+> The Deployment controller ensures that the specified number of replicas is always running. When a pod is deleted, it automatically creates a new one to replace it.
+>
+> 🔁 **Self-healing** is a key feature of Kubernetes deployments.
+
+```sh
+[ec2-user@master-n1 50_qus]$ k delete po q3-nginx-deployment-6d6b7df55b-4b5rt & k get po -w \
+>
+[1] 21357
+pod "q3-nginx-deployment-6d6b7df55b-4b5rt" deleted
+NAME                                   READY   STATUS        RESTARTS   AGE
+q3-nginx-deployment-6d6b7df55b-4b5rt   1/1     Terminating   0          14m
+q3-nginx-deployment-6d6b7df55b-l4krv   0/1     Pending       0          0s
+q3-nginx-deployment-6d6b7df55b-pn5sg   1/1     Running       0          6m55s
+q3-nginx-deployment-6d6b7df55b-l4krv   0/1     Pending       0          0s
+q3-nginx-deployment-6d6b7df55b-l4krv   0/1     ContainerCreating   0          0s
+q3-nginx-deployment-6d6b7df55b-4b5rt   0/1     Completed           0          14m
+q3-nginx-deployment-6d6b7df55b-4b5rt   0/1     Completed           0          14m
+q3-nginx-deployment-6d6b7df55b-4b5rt   0/1     Completed           0          14m
+q3-nginx-deployment-6d6b7df55b-l4krv   1/1     Running             0          3s
+^C[1]+  Done                    kubectl delete po q3-nginx-deployment-6d6b7df55b-4b5rt
+[ec2-user@master-n1 50_qus]$ k get po
+NAME                                   READY   STATUS    RESTARTS   AGE
+q3-nginx-deployment-6d6b7df55b-l4krv   1/1     Running   0          14s
+q3-nginx-deployment-6d6b7df55b-pn5sg   1/1     Running   0          7m9s
+```
