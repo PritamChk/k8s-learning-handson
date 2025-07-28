@@ -1,0 +1,87 @@
+### qus : 1 | Create a basic pod using nginx image
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: q1-nginx-pod
+spec:
+  containers:
+    - name: nginx-container
+      image: nginx:latest
+      ports:
+        - containerPort: 80
+```
+![alt text](image.png)
+
+---
+### Q2 : Expose that pod with a ClusterIP service
+
+`vi q2-pod.yaml`:
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: q2-nginx-pod
+  label:
+    app: nginx-q2-app
+spec:
+  containers:
+    - name: nginx-container
+      image: nginx:latest
+      ports:
+        - containerPort: 80
+```
+
+`vi q2-clusterip-svc.yaml`:
+
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: q2-nginx-service
+spec:
+  selector:
+    app: nginx-q2-app
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+  type: ClusterIP
+```
+
+```sh
+[ec2-user@master-n1 50_qus]$ kubectl get svc
+NAME               TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)   AGE
+kubernetes         ClusterIP   10.43.0.1      <none>        443/TCP   16d
+q2-nginx-service   ClusterIP   10.43.75.165   <none>        80/TCP    13m
+[ec2-user@master-n1 50_qus]$ kubectl get po
+NAME           READY   STATUS    RESTARTS   AGE
+q2-nginx-pod   1/1     Running   0          15m
+[ec2-user@master-n1 50_qus]$ kubectl run testbox --rm -it --image=busybox -- /bin/sh
+If you don't see a command prompt, try pressing enter.
+/ # wget -qO- q2-nginx-service
+<!DOCTYPE html>
+<html>
+<head>
+<title>Welcome to nginx!</title>
+<style>
+html { color-scheme: light dark; }
+body { width: 35em; margin: 0 auto;
+font-family: Tahoma, Verdana, Arial, sans-serif; }
+</style>
+</head>
+<body>
+<h1>Welcome to nginx!</h1>
+<p>If you see this page, the nginx web server is successfully installed and
+working. Further configuration is required.</p>
+
+<p>For online documentation and support please refer to
+<a href="http://nginx.org/">nginx.org</a>.<br/>
+Commercial support is available at
+<a href="http://nginx.com/">nginx.com</a>.</p>
+
+<p><em>Thank you for using nginx.</em></p>
+</body>
+</html>
+```
