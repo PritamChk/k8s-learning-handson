@@ -297,3 +297,11 @@ q7-nginx-pod   1/1     Running   0          2m29s
 2025/07/28 13:28:57 [notice] 1#1: start worker process 29
 2025/07/28 13:28:57 [notice] 1#1: start worker process 30
 ```
+
+9. Set a label on a pod and filter using `kubectl get pod -l`
+
+```sh
+[ec2-user@master-n1 50_qus]$ k get po -l app="nginx-app-q7"
+NAME           READY   STATUS    RESTARTS   AGE
+q7-nginx-pod   1/1     Running   0          8m
+```
