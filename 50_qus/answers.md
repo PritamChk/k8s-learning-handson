@@ -305,3 +305,17 @@ q7-nginx-pod   1/1     Running   0          2m29s
 NAME           READY   STATUS    RESTARTS   AGE
 q7-nginx-pod   1/1     Running   0          8m
 ```
+
+### 10. Add annotations to a resource and fetch them
+
+```sh
+kubectl annotate pod q7-nginx-pod createdBy=pritam environment=dev
+```
+
+`kubectl describe pod q7-nginx-pod`
+
+> remove annotation:
+>
+> ```sh
+> kubectl annotate pod q7-nginx-pod createdBy-
+> ```
