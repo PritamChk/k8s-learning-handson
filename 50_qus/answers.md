@@ -1,4 +1,5 @@
 ### qus : 1 | Create a basic pod using nginx image
+
 ```yaml
 apiVersion: v1
 kind: Pod
@@ -11,9 +12,11 @@ spec:
       ports:
         - containerPort: 80
 ```
+
 ![alt text](image.png)
 
 ---
+
 ### Q2 : Expose that pod with a ClusterIP service
 
 `vi q2-pod.yaml`:
@@ -84,4 +87,62 @@ Commercial support is available at
 <p><em>Thank you for using nginx.</em></p>
 </body>
 </html>
+```
+
+### 3. Create a Deployment with 3 replicas of nginx
+
+`vi q3-deployment.yaml`
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: q3-nginx-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nginx-q3-app
+  template:
+    metadata:
+      labels:
+        app: nginx-q3-app
+    spec:
+      containers:
+        - name: nginx-container
+          image: nginx:latest
+          ports:
+            - containerPort: 80
+```
+
+> [!NOTE]
+> Faced Error : for - apiVersion: v1
+>
+> ```
+> [ec2-user@master-n1 50_qus]$ k apply -f q3-deployment.yaml
+> error: resource mapping not found for name: "q3-nginx-deployment" namespace: "" from "q3-deployment.yaml": no matches for kind "Deployment" in version "v1"
+> ensure CRDs are installed first
+> ```
+>
+> Solution
+> `kubectl explain deployment`
+>
+> ```sh
+> GROUP:      apps
+> KIND:       Deployment
+> VERSION:    v1
+> ```
+
+```bash
+[ec2-user@master-n1 50_qus]$ k get deployments/q3-nginx-deployment -o wide
+NAME                  READY   UP-TO-DATE   AVAILABLE   AGE   CONTAINERS        IMAGES         SELECTOR
+q3-nginx-deployment   3/3     3            3           47s   nginx-container   nginx:latest   app=nginx-q3-app
+[ec2-user@master-n1 50_qus]$ k get deployments/q3-nginx-deployment
+NAME                  READY   UP-TO-DATE   AVAILABLE   AGE
+q3-nginx-deployment   3/3     3            3           54s
+[ec2-user@master-n1 50_qus]$ k get po
+NAME                                   READY   STATUS    RESTARTS   AGE
+q3-nginx-deployment-6d6b7df55b-4b5rt   1/1     Running   0          61s
+q3-nginx-deployment-6d6b7df55b-fg2t5   1/1     Running   0          61s
+q3-nginx-deployment-6d6b7df55b-xdvpk   1/1     Running   0          61s
 ```
