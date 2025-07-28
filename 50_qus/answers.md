@@ -242,3 +242,35 @@ Address 1: 10.43.0.1 kubernetes.default.svc.cluster.local
 > kubernetes.default is a built-in ClusterIP service that all pods should resolve.
 >
 > DNS is provided by CoreDNS in most Kubernetes clusters.
+
+### 7. Create a pod with resource limits (CPU and memory)
+
+`vi q7-pod.yaml`
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: q7-nginx-pod
+  labels:
+    app: nginx-app-q7
+spec:
+  containers:
+    - name: nginx-container
+      image: nginx:latest
+      ports:
+        - containerPort: 80
+      resources:
+        requests:
+          memory: "64Mi"
+          cpu: "300m"
+        limits:
+          memory: "256Mi"
+          cpu: "700m"
+```
+
+```bash
+[ec2-user@master-n1 50_qus]$ k get po -lapp=nginx-app-q7
+NAME           READY   STATUS    RESTARTS   AGE
+q7-nginx-pod   1/1     Running   0          2m29s
+```
